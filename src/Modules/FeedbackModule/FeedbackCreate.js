@@ -7,7 +7,7 @@ const API_URL = `${URLVALUE}/api/v1/feedback`;
 function FeedbackCreate() {
   const [formData, setFormData] = useState({
     feedbackText: "",
-    userId: ""
+    userId: "661a300d890d7f05801bb436"
   });
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -38,7 +38,7 @@ function FeedbackCreate() {
   const resetForm = () => {
     setFormData({
       feedbackText: "",
-      userId: ""
+      userId: "661a300d890d7f05801bb436"
     });
   };
 

@@ -5,7 +5,9 @@ const ProblemModule = () => {
   return (
     <div className="p-4">
       <ProblemCreate />
-      <LatestTenProblems />
+      <div className="p-4">
+        <LatestTenProblems />
+      </div>
     </div>
   );
 };

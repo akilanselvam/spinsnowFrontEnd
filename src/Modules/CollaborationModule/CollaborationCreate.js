@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { URLVALUE } from "./../../config.js";
+import Select from "react-select";
 
 const API_URL = `${URLVALUE}/api/v1/collaboration`;
+const API_URL_PROBLEMS = `${URLVALUE}/api/v1/problems`;
 
 function CollaborationCreate() {
+  const [problemOptions, setProblemOptions] = useState([]);
   const [formData, setFormData] = useState({
     problemId: "",
-    users: [],
+    users: ["661a3143ab37777490925dc8"],
     workspace: "",
     discussions: [],
     documents: []
@@ -15,21 +18,36 @@ function CollaborationCreate() {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  useEffect(() => {
+    async function fetchProblems() {
+      try {
+        const response = await axios.get(API_URL_PROBLEMS);
+        const problemsData = response.data.data.problems.map(problem => ({
+          value: problem._id,
+          label: problem.title
+        }));
+        setProblemOptions(problemsData);
+      } catch (error) {
+        console.error("Error fetching problems:", error);
+      }
+    }
+
+    fetchProblems();
+  }, []);
+
   const handleChange = event => {
     const { name, value } = event.target;
-    // Handle users as an array of strings representing user IDs
-    if (name === "users") {
-      const newUsers = value.split(",");
-      setFormData(prevFormData => ({
-        ...prevFormData,
-        [name]: newUsers
-      }));
-    } else {
-      setFormData(prevFormData => ({
-        ...prevFormData,
-        [name]: value
-      }));
-    }
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      [name]: value
+    }));
+  };
+
+  const handleProblemSelect = selectedOption => {
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      problemId: selectedOption ? selectedOption.value : ""
+    }));
   };
 
   const handleSubmit = async event => {
@@ -50,7 +68,7 @@ function CollaborationCreate() {
   const resetForm = () => {
     setFormData({
       problemId: "",
-      users: [],
+      users: ["661a3143ab37777490925dc8"],
       workspace: "",
       discussions: [],
       documents: []
@@ -64,15 +82,9 @@ function CollaborationCreate() {
       <form onSubmit={handleSubmit} className="mt-4">
         <div className="mb-4">
           <label htmlFor="problemId" className="block text-gray-700 font-serif text-xl mb-2">
-            Problem ID
+            Problem
           </label>
-          <input
-            type="text"
-            name="problemId"
-            value={formData.problemId}
-            onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
-          />
+          <Select options={problemOptions} onChange={handleProblemSelect} placeholder="Select a problem..." />
         </div>
         <div className="mb-4">
           <label htmlFor="users" className="block text-gray-700 font-serif text-xl mb-2">
@@ -81,8 +93,9 @@ function CollaborationCreate() {
           <input
             type="text"
             name="users"
-            value={formData.users.join(",")} // Join user IDs for display
+            value={formData.users} // Join user IDs for display
             onChange={handleChange}
+            disabled
             className="px-4 py-2 border border-pink-400 rounded-lg w-full"
           />
         </div>
@@ -104,7 +117,7 @@ function CollaborationCreate() {
           </label>
           <textarea
             name="discussions"
-            value={formData.discussions.join("\n")} // Join discussions for display
+            value={formData.discussions} // Join discussions for display
             onChange={handleChange}
             className="px-4 py-2 h-28 border border-pink-400 rounded-lg w-full"
           />
@@ -115,7 +128,7 @@ function CollaborationCreate() {
           </label>
           <textarea
             name="documents"
-            value={formData.documents.join("\n")} // Join documents for display
+            value={formData.documents} // Join documents for display
             onChange={handleChange}
             className="px-4 py-2 h-28 border border-pink-400 rounded-lg w-full"
           />

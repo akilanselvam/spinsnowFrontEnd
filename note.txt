@@ -1,0 +1,15 @@
+ <div className="mb-4">
+          <label htmlFor="teamMembers" className="block text-gray-700 font-serif text-xl mb-2">
+            Team Members (select existing users)
+          </label>
+          <input
+            type="text"
+            name="teamMembers"
+            value={formData.teamMembers}
+            onChange={handleChange}
+            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
+            required
+          />
+          {/* Implement a way to select existing users (dropdown, search, etc.) */}
+          {/* Update formData.teamMembers on user selection */}
+        </div>
