@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { URLVALUE } from "./../../config.js";
+import Select from "react-select"; // Import the Select component
 
 const API_URL = `${URLVALUE}/api/v1/resource`;
 
@@ -9,7 +10,7 @@ function ResourceCreate() {
     title: "",
     description: "",
     category: "",
-    uploader: "", // Likely populated based on logged-in user
+    uploader: "abcdef012345678901234567", // Likely populated based on logged-in user
     uploadDate: "", // Likely pre-populated with current date
     file: "", // Handle file upload
     communityId: "", // Optional association with a community
@@ -17,6 +18,24 @@ function ResourceCreate() {
   });
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [communityOptions, setCommunityOptions] = useState([]);
+
+  useEffect(() => {
+    async function fetchCommunities() {
+      try {
+        const response = await axios.get(`${URLVALUE}/api/v1/community`);
+        const communitiesData = response.data.data.communities.map(community => ({
+          value: community._id,
+          label: community.title
+        }));
+        setCommunityOptions(communitiesData);
+      } catch (error) {
+        console.error("Error fetching communities:", error);
+      }
+    }
+
+    fetchCommunities();
+  }, []);
 
   const handleChange = event => {
     const { name, value } = event.target;
@@ -26,33 +45,19 @@ function ResourceCreate() {
     }));
   };
 
-  const handleFileUpload = event => {
-    const selectedFile = event.target.files[0];
-    // Implement file validation and size checks here (optional)
+  const handleCommunitySelect = selectedOption => {
     setFormData(prevFormData => ({
       ...prevFormData,
-      file: selectedFile
+      communityId: selectedOption ? selectedOption.value : ""
     }));
   };
 
   const handleSubmit = async event => {
     event.preventDefault();
 
-    const formData = new FormData();
-    formData.append("title", formData.title);
-    formData.append("description", formData.description);
-    formData.append("category", formData.category);
-    formData.append("uploader", formData.uploader); // Pre-populated
-    formData.append("uploadDate", formData.uploadDate); // Pre-populated
-    formData.append("communityId", formData.communityId); // Optional
-    formData.append("file", formData.file);
-
     try {
-      const response = await axios.post(API_URL, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        }
-      });
+      const response = await axios.post(API_URL, formData);
+      console.log(response);
       setSuccessMessage("Resource created successfully");
       setErrorMessage("");
       resetForm();
@@ -68,7 +73,7 @@ function ResourceCreate() {
       title: "",
       description: "",
       category: "",
-      uploader: "",
+      uploader: "abcdef012345678901234567",
       uploadDate: "",
       file: "",
       communityId: "",
@@ -77,10 +82,10 @@ function ResourceCreate() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-8 py-4 my-4 bg-gray-50 rounded-lg shadow-md opacity-70 ">
+    <div className="max-w-3xl mx-auto px-8 py-4 my-4 bg-gray-50 rounded-lg shadow-md opacity-70">
       {successMessage && <p className="text-pink-800 font-semibold mb-4">{successMessage}</p>}
       {errorMessage && <p className="text-red-600 font-semibold mb-4">{errorMessage}</p>}
-      <form onSubmit={handleSubmit} className="mt-4" encType="multipart/form-data">
+      <form onSubmit={handleSubmit} className="mt-4">
         <div className="mb-4">
           <label htmlFor="title" className="block text-gray-700 font-serif text-xl mb-2">
             Title (required)
@@ -124,9 +129,10 @@ function ResourceCreate() {
             File (required)
           </label>
           <input
-            type="file"
+            type="text"
             name="file"
-            onChange={handleFileUpload}
+            value={formData.file}
+            onChange={handleChange}
             className="px-4 py-2 border border-pink-400 rounded-lg w-full"
             required
           />
@@ -135,25 +141,18 @@ function ResourceCreate() {
           <label htmlFor="communityId" className="block text-gray-700 font-serif text-xl mb-2">
             Community (optional)
           </label>
-          {/* Implement a dropdown or search to select a community (if applicable) */}
-          {/* Update formData.communityId on selection */}
-        </div>
-        <div className="mb-4">
-          <label htmlFor="uploader" className="block text-gray-700 font-serif text-xl mb-2">
-            Uploader (likely pre-populated)
-          </label>
-          <input
-            type="text"
-            name="uploader"
-            value={formData.uploader} // Likely pre-populated based on logged-in user
-            onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
-            disabled // Disable editing for now (assuming pre-populated)
+          <Select
+            options={communityOptions}
+            value={communityOptions.find(option => option.value === formData.communityId)}
+            onChange={handleCommunitySelect}
+            isClearable
+            isSearchable
+            placeholder="Select a community..."
           />
         </div>
         <button
           type="submit"
-          className=" text-pink-800 bg-pink-200 py-3 ml-2 mt-2 px-8 rounded-xl cursor-pointer shadow-lg focus:shadow-xl hover:shadow-xl active:shadow transform hover:-translate-y-0.5 active:translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 duration-300 ease-in-out">
+          className="text-pink-800 bg-pink-200 py-3 ml-2 mt-2 px-8 rounded-xl cursor-pointer shadow-lg focus:shadow-xl hover:shadow-xl active:shadow transform hover:-translate-y-0.5 active:translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 duration-300 ease-in-out">
           Create Resource
         </button>
       </form>

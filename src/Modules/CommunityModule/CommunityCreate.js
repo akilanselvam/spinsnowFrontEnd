@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { URLVALUE } from "./../../config.js";
+import Select from "react-select";
 
 const API_URL = `${URLVALUE}/api/v1/community`;
 
@@ -8,21 +9,48 @@ function CommunityCreate() {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    date: "", // Needs to be formatted for backend consumption (check documentation)
+    date: "",
     location: "",
     neededExpertise: "",
-    createdBy: "", // Likely populated based on logged-in user
-    projectId: "" // Optional, might need to be handled differently
+    createdBy: "661a300d890d7f05801bb436", // Likely populated based on logged-in user
+    projectId: "" // Single project ID, not an array
   });
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [projectOptions, setProjectOptions] = useState([]);
 
-  const handleChange = event => {
-    const { name, value } = event.target;
-    setFormData(prevFormData => ({
-      ...prevFormData,
-      [name]: value
-    }));
+  useEffect(() => {
+    async function fetchProjects() {
+      try {
+        const response = await axios.get(`${URLVALUE}/api/v1/project/`);
+        const projectsData = response.data.data.projects.map(project => ({
+          value: project._id,
+          label: project.title
+        }));
+        setProjectOptions(projectsData);
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      }
+    }
+
+    fetchProjects();
+  }, []);
+
+  const handleChange = selectedOptionOrEvent => {
+    if (selectedOptionOrEvent.target) {
+      // Input field change
+      const { name, value } = selectedOptionOrEvent.target;
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        [name]: value
+      }));
+    } else {
+      // Selection from Select component
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        projectId: selectedOptionOrEvent ? selectedOptionOrEvent.value : ""
+      }));
+    }
   };
 
   const handleSubmit = async event => {
@@ -47,7 +75,7 @@ function CommunityCreate() {
       date: "",
       location: "",
       neededExpertise: "",
-      createdBy: "",
+      createdBy: "661a300d890d7f05801bb436",
       projectId: ""
     });
   };
@@ -136,14 +164,14 @@ function CommunityCreate() {
         </div>
         <div className="mb-4">
           <label htmlFor="projectId" className="block text-gray-700 font-serif text-xl mb-2">
-            Project ID (optional)
+            Project ID (required)
           </label>
-          <input
-            type="text"
-            name="projectId"
-            value={formData.projectId}
+          <Select
+            options={projectOptions}
+            value={projectOptions.find(option => option.value === formData.projectId)}
             onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
+            isClearable
+            isDisabled={projectOptions.length === 0} // Disable select if no projects available
           />
         </div>
         <button

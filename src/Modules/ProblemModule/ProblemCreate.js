@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { URLVALUE } from "./../../config.js";
+import Select from "react-select";
 
 const API_URL = `${URLVALUE}/api/v1/problems`;
 
@@ -12,17 +13,42 @@ function ProblemCreate() {
     urgency: "",
     impactPotential: "",
     status: "",
-    submittedBy: "",
+    submittedBy: "abcdef012345678901234567",
     communityId: ""
   });
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [communityOptions, setCommunityOptions] = useState([]);
+
+  useEffect(() => {
+    async function fetchCommunities() {
+      try {
+        const response = await axios.get(`${URLVALUE}/api/v1/community`);
+        const communitiesData = response.data.data.communities.map(community => ({
+          value: community._id,
+          label: community.title
+        }));
+        setCommunityOptions(communitiesData);
+      } catch (error) {
+        console.error("Error fetching communities:", error);
+      }
+    }
+
+    fetchCommunities();
+  }, []);
 
   const handleChange = event => {
     const { name, value } = event.target;
     setFormData(prevFormData => ({
       ...prevFormData,
       [name]: value
+    }));
+  };
+
+  const handleCommunitySelect = selectedOption => {
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      communityId: selectedOption ? selectedOption.value : ""
     }));
   };
 
@@ -49,7 +75,7 @@ function ProblemCreate() {
       urgency: "",
       impactPotential: "",
       status: "",
-      submittedBy: "",
+      submittedBy: "abcdef012345678901234567",
       communityId: ""
     });
   };
@@ -98,37 +124,47 @@ function ProblemCreate() {
           <label htmlFor="urgency" className="block text-gray-700 font-serif text-xl mb-2">
             Urgency
           </label>
-          <input
-            type="text"
+          <select
             name="urgency"
             value={formData.urgency}
             onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
-          />
+            className="px-4 py-2 border border-pink-400 rounded-lg w-full">
+            <option value="">Select Urgency</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
         </div>
         <div className="mb-4">
           <label htmlFor="impactPotential" className="block text-gray-700 font-serif text-xl mb-2">
             Impact Potential
           </label>
-          <input
-            type="text"
+          <select
             name="impactPotential"
             value={formData.impactPotential}
             onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
-          />
+            className="px-4 py-2 border border-pink-400 rounded-lg w-full">
+            <option value="">Select Impact Potential</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
         </div>
         <div className="mb-4">
           <label htmlFor="status" className="block text-gray-700 font-serif text-xl mb-2">
             Status
           </label>
-          <input
-            type="text"
+          <select
             name="status"
             value={formData.status}
             onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
-          />
+            className="px-4 py-2 border border-pink-400 rounded-lg w-full">
+            <option value="">Select Status</option>
+            <option value="pending">Pending</option>
+            <option value="solved">Solved</option>
+            <option value="in progress">In Progress</option>
+            <option value="closed">Closed</option>
+          </select>
         </div>
         <div className="mb-4">
           <label htmlFor="submittedBy" className="block text-gray-700 font-serif text-xl mb-2">
@@ -139,6 +175,7 @@ function ProblemCreate() {
             name="submittedBy"
             value={formData.submittedBy}
             onChange={handleChange}
+            disabled
             className="px-4 py-2 border border-pink-400 rounded-lg w-full"
           />
         </div>
@@ -146,12 +183,13 @@ function ProblemCreate() {
           <label htmlFor="communityId" className="block text-gray-700 font-serif text-xl mb-2">
             Community ID
           </label>
-          <input
-            type="text"
-            name="communityId"
-            value={formData.communityId}
-            onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
+          <Select
+            options={communityOptions}
+            value={communityOptions.find(option => option.value === formData.communityId)}
+            onChange={handleCommunitySelect}
+            isClearable
+            isSearchable
+            placeholder="Select a community..."
           />
         </div>
         <button

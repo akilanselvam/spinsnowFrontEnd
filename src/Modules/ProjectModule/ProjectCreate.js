@@ -1,47 +1,59 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { URLVALUE } from "./../../config.js";
+import Select from "react-select";
 
-const API_URL = `${URLVALUE}/api/v1/project`;
+const API_URL = `${URLVALUE}/api/v1/project/`;
+const API_URL_USERS = `${URLVALUE}/api/v1/user`;
 
 function ProjectCreate() {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     area: "",
-    goals: [], // Array of strings
+    goals: [],
     timelines: {
-      startDate: "", // Needs to be formatted for backend consumption (check documentation)
-      endDate: "", // Needs to be formatted for backend consumption (check documentation)
-      otherDates: [] // Array of dates
+      startDate: "",
+      endDate: "",
+      otherDates: []
     },
-    progress: {}, // Can be any data structure based on your requirements
-    impactMeasurement: {}, // Can be any data structure based on your requirements
-    teamMembers: [], // Array of user IDs (object IDs)
-    createdBy: "" // Likely populated based on logged-in user
+    progress: {},
+    impactMeasurement: {},
+    teamMembers: [],
+    createdBy: "661a300d890d7f05801bb436"
   });
+
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [users, setUsers] = useState([]);
+  const [selectedUsers, setSelectedUsers] = useState([]);
+
+  useEffect(() => {
+    async function fetchUsers() {
+      try {
+        const response = await axios.get(API_URL_USERS);
+        const usersData = response.data.data.users.map(user => ({
+          value: user._id,
+          label: `${user.username} (${user.firstName} ${user.lastName})`
+        }));
+        setUsers(usersData);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    }
+
+    fetchUsers();
+  }, []);
 
   const handleChange = event => {
     const { name, value } = event.target;
-    // Handle goals and otherDates as arrays
-    if (name === "goals") {
-      const newGoals = value.split(",");
+    if (name.includes(".")) {
+      const [parent, child] = name.split(".");
       setFormData(prevFormData => ({
         ...prevFormData,
-        [name]: newGoals
-      }));
-    } else if (name.includes("timelines.otherDates")) {
-      const newOtherDates = [...formData.timelines.otherDates]; // Copy existing dates
-      if (value) {
-        newOtherDates.push(new Date(value)); // Add new date
-      }
-      setFormData(prevFormData => ({
-        ...prevFormData,
-        timelines: {
-          ...prevFormData.timelines,
-          otherDates: newOtherDates
+        [parent]: {
+          ...prevFormData[parent],
+          [child]: value
         }
       }));
     } else {
@@ -52,11 +64,21 @@ function ProjectCreate() {
     }
   };
 
+  const handleSelectChange = selectedOptions => {
+    setSelectedUsers(selectedOptions);
+    console.log(selectedUsers);
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      teamMembers: selectedOptions.map(option => option.value)
+    }));
+  };
+
   const handleSubmit = async event => {
+    console.log(formData);
     event.preventDefault();
 
     try {
-      const response = await axios.post(API_URL, formData);
+      await axios.post(API_URL, formData);
       setSuccessMessage("Project created successfully");
       setErrorMessage("");
       resetForm();
@@ -135,7 +157,7 @@ function ProjectCreate() {
           <input
             type="text"
             name="goals"
-            value={formData.goals.join(",")} // Join goals for display
+            value={formData.goals} // Join goals for display
             onChange={handleChange}
             className="px-4 py-2 border border-pink-400 rounded-lg w-full"
           />
@@ -167,46 +189,6 @@ function ProjectCreate() {
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="timelines.otherDates" className="block text-gray-700 font-serif text-xl mb-2">
-            Other Important Dates (optional - format: YYYY-MM-DD)
-          </label>
-          <div>
-            {formData.timelines.otherDates.map((date, index) => (
-              <div key={index} className="flex items-center mb-2">
-                <input
-                  type="date"
-                  name={`timelines.otherDates[${index}]`}
-                  value={date}
-                  onChange={handleChange}
-                  className="px-4 py-2 border border-pink-400 rounded-lg mr-2"
-                />
-                <button
-                  type="button"
-                  className="text-red-500 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 p-1"
-                  onClick={() => {
-                    const newOtherDates = [...formData.timelines.otherDates];
-                    newOtherDates.splice(index, 1);
-                    setFormData(prevFormData => ({
-                      ...prevFormData,
-                      timelines: {
-                        ...prevFormData.timelines,
-                        otherDates: newOtherDates
-                      }
-                    }));
-                  }}>
-                  Remove
-                </button>
-              </div>
-            ))}
-            <input
-              type="date"
-              name="timelines.otherDates" // Empty name for adding new dates
-              onChange={handleChange}
-              className="px-4 py-2 border border-pink-400 rounded-lg w-full"
-            />
-          </div>
-        </div>
-        <div className="mb-4">
           <label htmlFor="progress" className="block text-gray-700 font-serif text-xl mb-2">
             Progress (optional)
           </label>
@@ -222,9 +204,9 @@ function ProjectCreate() {
           <label htmlFor="teamMembers" className="block text-gray-700 font-serif text-xl mb-2">
             Team Members (select existing users)
           </label>
-          {/* Implement a way to select existing users (dropdown, search, etc.) */}
-          {/* Update formData.teamMembers on user selection */}
+          <Select options={users} value={selectedUsers} onChange={handleSelectChange} isMulti className="w-full" />
         </div>
+
         <div className="mb-4">
           <label htmlFor="createdBy" className="block text-gray-700 font-serif text-xl mb-2">
             Created By (likely pre-populated)
@@ -238,6 +220,7 @@ function ProjectCreate() {
             disabled // Disable editing for now (assuming pre-populated)
           />
         </div>
+
         <button
           type="submit"
           className=" text-pink-800 bg-pink-200 py-3 ml-2 mt-2 px-8 rounded-xl cursor-pointer shadow-lg focus:shadow-xl hover:shadow-xl active:shadow transform hover:-translate-y-0.5 active:translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 duration-300 ease-in-out">
