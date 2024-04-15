@@ -19,23 +19,43 @@ function ProblemCreate() {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [communityOptions, setCommunityOptions] = useState([]);
+  const [projectOptions, setProjectOptions] = useState([]);
+  const [selectedProject, setSelectedProject] = useState("");
 
   useEffect(() => {
-    async function fetchCommunities() {
+    async function fetchProjects() {
       try {
-        const response = await axios.get(`${URLVALUE}/api/v1/community`);
-        const communitiesData = response.data.data.communities.map(community => ({
-          value: community._id,
-          label: community.title
+        const response = await axios.get(`${URLVALUE}/api/v1/project`);
+        const projectsData = response.data.data.projects.map(project => ({
+          value: project._id,
+          label: project.title
         }));
-        setCommunityOptions(communitiesData);
+        setProjectOptions(projectsData);
       } catch (error) {
-        console.error("Error fetching communities:", error);
+        console.error("Error fetching projects:", error);
       }
     }
 
-    fetchCommunities();
+    fetchProjects();
   }, []);
+
+  const handleProjectSelect = async selectedOption => {
+    setSelectedProject(selectedOption.value);
+    await fetchCommunities(selectedOption.value);
+  };
+
+  async function fetchCommunities(projectId) {
+    try {
+      const response = await axios.get(`${URLVALUE}/api/v1/community/getbyProject/${projectId}`);
+      const communitiesData = response.data.data.community.map(community => ({
+        value: community._id,
+        label: community.title
+      }));
+      setCommunityOptions(communitiesData);
+    } catch (error) {
+      console.error("Error fetching communities:", error);
+    }
+  }
 
   const handleChange = event => {
     const { name, value } = event.target;
@@ -45,18 +65,11 @@ function ProblemCreate() {
     }));
   };
 
-  const handleCommunitySelect = selectedOption => {
-    setFormData(prevFormData => ({
-      ...prevFormData,
-      communityId: selectedOption ? selectedOption.value : ""
-    }));
-  };
-
   const handleSubmit = async event => {
     event.preventDefault();
 
     try {
-      await axios.post(API_URL, formData);
+      await axios.post(API_URL, { ...formData, projectId: selectedProject });
       setSuccessMessage("Problem created successfully");
       setErrorMessage("");
       resetForm();
@@ -180,13 +193,29 @@ function ProblemCreate() {
           />
         </div>
         <div className="mb-4">
+          <label htmlFor="project" className="block text-gray-700 font-serif text-xl mb-2">
+            Project
+          </label>
+          <Select
+            options={projectOptions}
+            onChange={handleProjectSelect}
+            isClearable
+            isSearchable
+            placeholder="Select a project..."
+          />
+        </div>
+        <div className="mb-4">
           <label htmlFor="communityId" className="block text-gray-700 font-serif text-xl mb-2">
-            Community ID
+            Community
           </label>
           <Select
             options={communityOptions}
-            value={communityOptions.find(option => option.value === formData.communityId)}
-            onChange={handleCommunitySelect}
+            onChange={selectedOption =>
+              setFormData(prevFormData => ({
+                ...prevFormData,
+                communityId: selectedOption ? selectedOption.value : ""
+              }))
+            }
             isClearable
             isSearchable
             placeholder="Select a community..."

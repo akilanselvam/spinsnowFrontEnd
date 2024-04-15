@@ -8,7 +8,7 @@ import ProjectModule from "../Modules/ProjectModule/ProjectModule";
 import UserModule from "../Modules/UserModule/UserModule";
 import ResourceModule from "../Modules/ResourceModule/ResourceModule";
 function SpinsNowHomePage() {
-  const [selectedModule, setSelectedModule] = useState("UserModule");
+  const [selectedModule, setSelectedModule] = useState("ProblemModule");
 
   const handleModuleChange = event => {
     setSelectedModule(event.target.value);
