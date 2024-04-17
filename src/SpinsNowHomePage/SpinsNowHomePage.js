@@ -7,6 +7,7 @@ import FeedbackModule from "../Modules/FeedbackModule/FeedbackModule";
 import ProjectModule from "../Modules/ProjectModule/ProjectModule";
 import UserModule from "../Modules/UserModule/UserModule";
 import ResourceModule from "../Modules/ResourceModule/ResourceModule";
+import LoginPage from "../Modules/SecurityModule/LoginPage";
 function SpinsNowHomePage() {
   const [selectedModule, setSelectedModule] = useState("ProblemModule");
 

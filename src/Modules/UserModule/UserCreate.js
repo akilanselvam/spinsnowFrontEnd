@@ -79,7 +79,7 @@ function UserCreate() {
 
   return (
     <div className="max-w-3xl mx-auto px-8 py-4 my-4 bg-gray-50 rounded-lg shadow-md opacity-70 ">
-      {successMessage && <p className="text-pink-800 font-semibold mb-4">{successMessage}</p>}
+      {successMessage && <p className="text-indigo-800 font-semibold mb-4">{successMessage}</p>}
       {errorMessage && <p className="text-red-600 font-semibold mb-4">{errorMessage}</p>}
       <form onSubmit={handleSubmit} className="mt-4">
         <div className="mb-4">
@@ -91,7 +91,7 @@ function UserCreate() {
             name="username"
             value={formData.username}
             onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
+            className="px-4 py-2 border border-indigo-400 rounded-lg w-full"
             required
           />
         </div>
@@ -104,7 +104,7 @@ function UserCreate() {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
+            className="px-4 py-2 border border-indigo-400 rounded-lg w-full"
             required
           />
         </div>
@@ -117,7 +117,7 @@ function UserCreate() {
             name="password"
             value={formData.password}
             onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
+            className="px-4 py-2 border border-indigo-400 rounded-lg w-full"
             required
           />
         </div>
@@ -130,7 +130,7 @@ function UserCreate() {
             name="passwordConfirm"
             value={formData.passwordConfirm}
             onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
+            className="px-4 py-2 border border-indigo-400 rounded-lg w-full"
             required
           />
         </div>
@@ -143,7 +143,7 @@ function UserCreate() {
             name="firstName"
             value={formData.firstName}
             onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
+            className="px-4 py-2 border border-indigo-400 rounded-lg w-full"
             required
           />
         </div>
@@ -156,7 +156,7 @@ function UserCreate() {
             name="lastName"
             value={formData.lastName}
             onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
+            className="px-4 py-2 border border-indigo-400 rounded-lg w-full"
             required
           />
         </div>
@@ -168,7 +168,7 @@ function UserCreate() {
             name="expert"
             value={formData.expert}
             onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full">
+            className="px-4 py-2 border border-indigo-400 rounded-lg w-full">
             <option value="yes">Yes</option>
             <option value="no">No</option>
           </select>
@@ -182,7 +182,7 @@ function UserCreate() {
             name="phoneNumber"
             value={formData.phoneNumber}
             onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
+            className="px-4 py-2 border border-indigo-400 rounded-lg w-full"
           />
         </div>
         <div className="flex flex-wrap mb-4">
@@ -195,7 +195,7 @@ function UserCreate() {
               name="skills"
               value={formData.skills.join(",")} // Join skills for display
               onChange={handleChange}
-              className="px-4 py-2 border border-pink-400 rounded-lg w-full"
+              className="px-4 py-2 border border-indigo-400 rounded-lg w-full"
             />
           </div>
           <div className="w-full mr-2 mb-2">
@@ -207,7 +207,7 @@ function UserCreate() {
               name="expertise"
               value={formData.expertise.join(",")} // Join expertise for display
               onChange={handleChange}
-              className="px-4 py-2 border border-pink-400 rounded-lg w-full"
+              className="px-4 py-2 border border-indigo-400 rounded-lg w-full"
             />
           </div>
           <div className="w-full">
@@ -219,7 +219,7 @@ function UserCreate() {
               name="areasOfInterest"
               value={formData.areasOfInterest.join(",")} // Join areas of interest for display
               onChange={handleChange}
-              className="px-4 py-2 border border-pink-400 rounded-lg w-full"
+              className="px-4 py-2 border border-indigo-400 rounded-lg w-full"
             />
           </div>
         </div>
@@ -232,7 +232,7 @@ function UserCreate() {
             name="state"
             value={formData.state}
             onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
+            className="px-4 py-2 border border-indigo-400 rounded-lg w-full"
           />
         </div>
         <div className="mb-4">
@@ -244,7 +244,7 @@ function UserCreate() {
             name="country"
             value={formData.country}
             onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
+            className="px-4 py-2 border border-indigo-400 rounded-lg w-full"
           />
         </div>
         <div className="mb-4">
@@ -256,7 +256,7 @@ function UserCreate() {
             name="age"
             value={formData.age}
             onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
+            className="px-4 py-2 border border-indigo-400 rounded-lg w-full"
           />
         </div>
         <div className="mb-4">
@@ -268,12 +268,12 @@ function UserCreate() {
             name="sex"
             value={formData.sex}
             onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
+            className="px-4 py-2 border border-indigo-400 rounded-lg w-full"
           />
         </div>
         <button
           type="submit"
-          className=" text-pink-800 bg-pink-200 py-3 ml-2 mt-2 px-8 rounded-xl cursor-pointer shadow-lg focus:shadow-xl hover:shadow-xl active:shadow transform hover:-translate-y-0.5 active:translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 duration-300 ease-in-out">
+          className=" text-indigo-800 bg-indigo-200 py-3 ml-2 mt-2 px-8 rounded-xl cursor-pointer shadow-lg focus:shadow-xl hover:shadow-xl active:shadow transform hover:-translate-y-0.5 active:translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 duration-300 ease-in-out">
           Create User
         </button>
       </form>
