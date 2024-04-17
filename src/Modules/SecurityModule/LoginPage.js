@@ -2,7 +2,9 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthProvider";
+import { URLVALUE } from "./../../config.js";
 
+const API_URL = `${URLVALUE}/api/v1/user/login`;
 const LoginPage = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -23,7 +25,7 @@ const LoginPage = () => {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:8000/api/v1/user/login", {
+      const response = await fetch(API_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
