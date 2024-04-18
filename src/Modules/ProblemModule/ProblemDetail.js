@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { URLVALUE } from "./../../config.js";
+
+const API_URL = `${URLVALUE}/api/v1/problems`;
 
 function ProblemDetail() {
   const { problemId } = useParams();
@@ -12,7 +15,7 @@ function ProblemDetail() {
   useEffect(() => {
     const fetchProblem = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/v1/problems/${problemId}`);
+        const response = await axios.get(API_URL + `/${problemId}`);
         const data = response.data;
         if (data.status === "success") {
           setProblem(data.data.problem);
@@ -34,7 +37,7 @@ function ProblemDetail() {
 
   const handleUpdate = async () => {
     try {
-      const response = await axios.patch(`http://localhost:8000/api/v1/problems/${problemId}`, editedProblem, {
+      const response = await axios.patch(API_URL + `/${problemId}`, editedProblem, {
         headers: {
           "Content-Type": "application/json"
         }
