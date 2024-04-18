@@ -82,7 +82,7 @@ function CommunityCreate() {
 
   return (
     <div className="max-w-3xl mx-auto px-8 py-4 my-4 bg-gray-50 rounded-lg shadow-md opacity-70 ">
-      {successMessage && <p className="text-pink-800 font-semibold mb-4">{successMessage}</p>}
+      {successMessage && <p className="text-indigo-800 font-semibold mb-4">{successMessage}</p>}
       {errorMessage && <p className="text-red-600 font-semibold mb-4">{errorMessage}</p>}
       <form onSubmit={handleSubmit} className="mt-4">
         <div className="mb-4">
@@ -94,7 +94,7 @@ function CommunityCreate() {
             name="title"
             value={formData.title}
             onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
+            className="px-4 py-2 border border-indigo-400 rounded-lg w-full"
             required
           />
         </div>
@@ -106,7 +106,7 @@ function CommunityCreate() {
             name="description"
             value={formData.description}
             onChange={handleChange}
-            className="px-4 py-2 h-28 border border-pink-400 rounded-lg w-full"
+            className="px-4 py-2 h-28 border border-indigo-400 rounded-lg w-full"
             required
           />
         </div>
@@ -119,7 +119,7 @@ function CommunityCreate() {
             name="date"
             value={formData.date}
             onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
+            className="px-4 py-2 border border-indigo-400 rounded-lg w-full"
             required
           />
         </div>
@@ -132,7 +132,7 @@ function CommunityCreate() {
             name="location"
             value={formData.location}
             onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
+            className="px-4 py-2 border border-indigo-400 rounded-lg w-full"
             required
           />
         </div>
@@ -145,7 +145,7 @@ function CommunityCreate() {
             name="neededExpertise"
             value={formData.neededExpertise}
             onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
+            className="px-4 py-2 border border-indigo-400 rounded-lg w-full"
             required
           />
         </div>
@@ -158,7 +158,7 @@ function CommunityCreate() {
             name="createdBy"
             value={formData.createdBy} // Pre-populate based on logged-in user
             onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
+            className="px-4 py-2 border border-indigo-400 rounded-lg w-full"
             disabled // Disable editing for now (assuming pre-populated)
           />
         </div>
@@ -176,7 +176,7 @@ function CommunityCreate() {
         </div>
         <button
           type="submit"
-          className=" text-pink-800 bg-pink-200 py-3 ml-2 mt-2 px-8 rounded-xl cursor-pointer shadow-lg focus:shadow-xl hover:shadow-xl active:shadow transform hover:-translate-y-0.5 active:translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 duration-300 ease-in-out">
+          className=" text-indigo-800 bg-indigo-200 py-3 ml-2 mt-2 px-8 rounded-xl cursor-pointer shadow-lg focus:shadow-xl hover:shadow-xl active:shadow transform hover:-translate-y-0.5 active:translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 duration-300 ease-in-out">
           Create Community
         </button>
       </form>

@@ -7,7 +7,7 @@
             name="teamMembers"
             value={formData.teamMembers}
             onChange={handleChange}
-            className="px-4 py-2 border border-pink-400 rounded-lg w-full"
+            className="px-4 py-2 border border-indigo-400 rounded-lg w-full"
             required
           />
           {/* Implement a way to select existing users (dropdown, search, etc.) */}
