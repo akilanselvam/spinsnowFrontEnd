@@ -11,7 +11,7 @@ const ProblemCollabViewModel = () => {
   };
 
   return (
-    <div>
+    <div className="">
       <ProblemDetail />
       <CollaborationProblem onPostSuccess={handlePostSuccess} />
       <CollaborationProblemView key={refreshCollabView} />
