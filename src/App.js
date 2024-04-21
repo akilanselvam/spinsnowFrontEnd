@@ -13,6 +13,9 @@ import MobileNavbar from "./Modules/HeaderModule/MobileNavbar";
 import { useMediaQuery } from "react-responsive";
 import HomePageCreateProblem from "./Modules/ProblemModule/HomePageCreateProblem";
 import ProjectCommunityViewModel from "./SpinsNowHomePage/ProjectCommunityViewModel";
+import CommunityProblemViewModel from "./SpinsNowHomePage/CommunityProblemViewModel";
+import Dashboard from "./Modules/UserModule/Dashboard";
+import GlobalSearchBar from "./Modules/UserModule/GlobalSearchBar";
 function App() {
   const isMobile = useMediaQuery({ maxWidth: 640 }); // Adjust the breakpoint as needed
 
@@ -30,8 +33,10 @@ function App() {
             <Route path="/Modulehomepage" element={<SpinsNowModuleHomePage />} />
             <Route path="/problem/:problemId" element={<ProblemCollabViewModel />} />
             <Route path="/project/:projectId" element={<ProjectCommunityViewModel />} />
+            <Route path="/community/:communityId" element={<CommunityProblemViewModel />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/search" element={<GlobalSearchBar />} />
             <Route path="/suggestedProjectFeed" element={<HompageProjectCard />} />
-
             {/*<Route path="/create" element={<LifeHackCreate />} />
             <Route path="/view/:id" element={<LifeHackSingle />} />
             <Route path="/viewAdmin/:id" element={<LifeHackSingleAdmin />} />

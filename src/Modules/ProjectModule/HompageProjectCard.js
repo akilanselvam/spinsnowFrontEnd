@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Importing useNavigate
 // Assuming you have react-router-dom installed and configured
+import { URLVALUE } from "./../../config.js";
+
+const API_URL = `${URLVALUE}/api/v1/project`;
 
 const HompageProjectCard = () => {
   const navigate = useNavigate(); // Initializing useNavigate
   const [projectData, setProjectData] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/v1/project/getRandomSuggestedProjects")
+    fetch(API_URL + `/getRandomSuggestedProjects`)
       .then(response => response.json())
       .then(data => {
         if (data.status === "success") {

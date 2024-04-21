@@ -22,7 +22,7 @@ const Navbar = () => {
           </div>
           <div
             className="flex cursor-pointer border px-4 py-2 text-md text-grey-darkest "
-            onClick={() => navigate("/explore")}>
+            onClick={() => navigate("/dashboard")}>
             <div className="pr-2">
               <i className="far fa-compass w-6 h-6 fill-current text-gray-500"></i>
             </div>

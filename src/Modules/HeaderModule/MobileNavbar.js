@@ -10,26 +10,26 @@ const MobileNavbar = () => {
         <button
           onClick={() => navigate("/")}
           className="flex items-center justify-center flex-col text-center px-4 py-2 text-black hover:text-indigo-500 focus:outline-none">
-          <i className="far fa-home text-2xl mb-1"></i>
+          <i className="fas fa-home text-2xl mb-1"></i>
           <span className="text-xs">Home</span>
         </button>
         <button
           onClick={() => navigate("/suggestedProjectFeed")}
           className="flex items-center justify-center flex-col text-center px-4 py-2 text-black hover:text-indigo-500 focus:outline-none">
-          <i className="far fa-compass text-2xl mb-1"></i>
+          <i className="fas fa-compass text-2xl mb-1"></i>
           <span className="text-xs">Explore</span>
         </button>
         <button
           onClick={() => navigate("/search")}
           className="flex items-center justify-center flex-col text-center px-4 py-2 text-black hover:text-indigo-500 focus:outline-none">
-          <i className="far fa-search text-2xl mb-1"></i>
+          <i className="fas fa-search text-2xl mb-1"></i>
           <span className="text-xs">Search</span>
         </button>
         <button
-          onClick={() => navigate("/settings")}
+          onClick={() => navigate("/dashboard")}
           className="flex items-center justify-center flex-col text-center px-4 py-2 text-black hover:text-indigo-500 focus:outline-none">
-          <i className="far fa-cog text-2xl mb-1"></i>
-          <span className="text-xs">Settings</span>
+          <i className="fas fa-user text-2xl mb-1"></i>
+          <span className="text-xs">Dashboard</span>
         </button>
       </div>
     </div>

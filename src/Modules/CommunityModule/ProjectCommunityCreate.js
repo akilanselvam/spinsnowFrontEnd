@@ -1,30 +1,30 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
 import { URLVALUE } from "./../../config.js";
+import { useParams } from "react-router-dom";
 import { AuthContext } from ".././SecurityModule/AuthProvider.js";
 
-const API_URL = `${URLVALUE}/api/v1/collaboration`;
+const API_URL = `${URLVALUE}/api/v1/community`;
 const API_URL_USER = `${URLVALUE}/api/v1/user/retriveUserId`;
 
-function CollaborationProblem({ onPostSuccess }) {
+function ProjectCommunityCreate({ onPostSuccess }) {
   const { isLoggedIn } = useContext(AuthContext);
 
-  const { problemId } = useParams(); // Get problemId from URL params
-  const token = localStorage.getItem("token");
-
-  const [userId, setUserId] = useState("");
+  const { projectId } = useParams(); // Get projectId from useParams
   const [formData, setFormData] = useState({
-    problemId,
-    users: [],
-    discussions: null,
-    workspace: "none",
-    documents: null
+    title: "",
+    description: "",
+    location: "Online", // Set location to "Online"
+    neededExpertise: "None", // Set neededExpertise to "None"
+    createdBy: "", // Initialize createdBy to an empty string
+    projectId: projectId // Set projectId from useParams
   });
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [userId, setUserId] = useState(""); // State variable to store the user ID
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
     async function fetchUserId() {
       try {
         const response = await axios.get(API_URL_USER, {
@@ -36,7 +36,7 @@ function CollaborationProblem({ onPostSuccess }) {
           setUserId(response.data.userId);
           setFormData(prevFormData => ({
             ...prevFormData,
-            users: [response.data.userId]
+            createdBy: response.data.userId // Update createdBy with the user ID
           }));
         }
       } catch (error) {
@@ -48,7 +48,15 @@ function CollaborationProblem({ onPostSuccess }) {
     if (token) {
       fetchUserId();
     }
-  }, [token]);
+  }, []);
+
+  const handleChange = event => {
+    const { name, value } = event.target;
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      [name]: value
+    }));
+  };
 
   const handleSubmit = async event => {
     event.preventDefault();
@@ -58,27 +66,28 @@ function CollaborationProblem({ onPostSuccess }) {
     }
     try {
       const response = await axios.post(API_URL, formData);
-      setSuccessMessage("Collaboration created successfully");
+      console.log(response);
+      setSuccessMessage("Community created successfully");
       setErrorMessage("");
       resetForm();
-      // Invoke callback function after successful submission
       if (typeof onPostSuccess === "function") {
         onPostSuccess();
       }
     } catch (error) {
-      console.error("Error creating collaboration:", error);
+      console.error("Error creating community:", error);
       setSuccessMessage("");
-      setErrorMessage("Failed to create collaboration. Please try again.");
+      setErrorMessage("Failed to create community. Please try again.");
     }
   };
 
   const resetForm = () => {
     setFormData({
-      problemId,
-      users: [userId],
-      discussions: "",
-      workspace: "none",
-      documents: null
+      title: "",
+      description: "",
+      location: "Online",
+      neededExpertise: "None",
+      createdBy: userId, // Reset createdBy to the user ID
+      projectId: projectId
     });
   };
 
@@ -87,34 +96,40 @@ function CollaborationProblem({ onPostSuccess }) {
       {successMessage && <p className="text-indigo-800 font-semibold mb-4">{successMessage}</p>}
       {errorMessage && <p className="text-red-600 font-semibold mb-4">{errorMessage}</p>}
       <form onSubmit={handleSubmit} className="mt-4">
-        {/* Problem ID (removed selection) */}
-        <input type="hidden" name="problemId" value={problemId} />
-
-        {/* User IDs */}
-        <input type="hidden" name="users" value={userId} />
-
-        {/* Workspace (removed field) */}
-
         <div className="mb-4">
-          <label htmlFor="discussions" className="block text-gray-700 font-serif text-xl mb-2">
-            What you would do?
+          <label htmlFor="title" className="block text-gray-700 font-serif text-xl mb-2">
+            Objective
+          </label>
+          <input
+            type="text"
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            className="px-4 py-2 border border-indigo-400 rounded-lg w-full"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="description" className="block text-gray-700 font-serif text-xl mb-2">
+            Description
           </label>
           <textarea
-            name="discussions"
-            value={formData.discussions}
-            onChange={e => setFormData({ ...formData, discussions: e.target.value })}
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
             className="px-4 py-2 h-28 border border-indigo-400 rounded-lg w-full"
+            required
           />
         </div>
 
         <button
           type="submit"
           className=" text-indigo-800 bg-indigo-200 py-3 ml-2 mt-2 px-8 rounded-xl cursor-pointer shadow-lg focus:shadow-xl hover:shadow-xl active:shadow transform hover:-translate-y-0.5 active:translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 duration-300 ease-in-out">
-          Post{" "}
+          Create Community
         </button>
       </form>
     </div>
   );
 }
 
-export default CollaborationProblem;
+export default ProjectCommunityCreate;

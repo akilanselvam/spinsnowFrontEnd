@@ -3,7 +3,8 @@ import Autosuggest from "react-autosuggest";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { URLVALUE } from "../../config";
-const ProblemSearchBar = () => {
+
+const GlobalSearchBar = () => {
   const API_URL = `${URLVALUE}/api/v1/problems`;
 
   const [value, setValue] = useState("");
@@ -18,7 +19,14 @@ const ProblemSearchBar = () => {
     try {
       const response = await axios.get(API_URL + `/search?search=${inputValue}`);
       const { data } = response.data;
-      setSuggestions(data.problems);
+
+      const formattedResults = data.results.map(result => ({
+        title: result.title,
+        _id: result._id,
+        type: result.type
+      }));
+
+      setSuggestions(formattedResults);
     } catch (error) {
       console.error("Error fetching suggestions:", error);
     }
@@ -31,12 +39,12 @@ const ProblemSearchBar = () => {
     <div
       className={`cursor-pointer px-3 py-2 ${isHighlighted ? "bg-gray-100 font-bold" : "bg-gray-50"}`}
       onClick={() => {
-        setValue(""); // Clear the input field value after clicking on a suggestion
-        navigate(`/problem/${suggestion._id}`);
+        setValue("");
+        navigate(`/${suggestion.type}/${suggestion._id}`);
       }}
       onMouseEnter={() => setIsFocused(true)}
       onMouseLeave={() => setIsFocused(false)}>
-      {suggestion.title}
+      {suggestion.title} ({suggestion.type})
     </div>
   );
 
@@ -52,10 +60,6 @@ const ProblemSearchBar = () => {
     setSuggestions([]);
   };
 
-  const onSuggestionSelected = (event, { suggestion }) => {
-    navigate(`/problem/${suggestion._id}`);
-  };
-
   const inputProps = {
     placeholder: "Search problems...",
     value,
@@ -65,9 +69,9 @@ const ProblemSearchBar = () => {
   };
 
   return (
-    <div className="flex   lg:mx-24  ">
+    <div className="flex lg:mx-24">
       <div
-        className={`absolute  max-w-3xl  z-10 w-full  px-8 py-4 my-4 rounded-lg shadow-md ${
+        className={`absolute max-w-3xl z-10 w-full px-8 py-4 my-4 rounded-lg shadow-md ${
           isFocused ? "bg-gray-50" : "bg-gray-50"
         }`}>
         <Autosuggest
@@ -78,8 +82,7 @@ const ProblemSearchBar = () => {
           renderSuggestion={renderSuggestion}
           inputProps={{
             ...inputProps,
-
-            className: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none "
+            className: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
           }}
         />
       </div>
@@ -87,4 +90,4 @@ const ProblemSearchBar = () => {
   );
 };
 
-export default ProblemSearchBar;
+export default GlobalSearchBar;

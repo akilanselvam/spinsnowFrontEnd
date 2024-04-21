@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { URLVALUE } from "./../../config.js";
+import { AuthContext } from ".././SecurityModule/AuthProvider.js";
 
 const API_URL = `${URLVALUE}/api/v1/project`;
 
 function ProjectDetail() {
+  const { isLoggedIn } = useContext(AuthContext);
   const { projectId } = useParams();
   const [project, setProject] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
@@ -32,6 +34,10 @@ function ProjectDetail() {
   }, [projectId]);
 
   const handleEdit = () => {
+    if (!isLoggedIn) {
+      setErrorMessage("Please login to proceed further!");
+      return;
+    }
     setIsEditing(true);
   };
 
