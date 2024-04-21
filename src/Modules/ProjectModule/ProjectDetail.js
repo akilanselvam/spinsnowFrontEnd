@@ -4,35 +4,34 @@ import { useParams } from "react-router-dom";
 import { URLVALUE } from "./../../config.js";
 import { AuthContext } from ".././SecurityModule/AuthProvider.js";
 
-const API_URL = `${URLVALUE}/api/v1/problems`;
+const API_URL = `${URLVALUE}/api/v1/project`;
 
-function ProblemDetail() {
+function ProjectDetail() {
   const { isLoggedIn } = useContext(AuthContext);
-
-  const { problemId } = useParams();
-  const [problem, setProblem] = useState(null);
+  const { projectId } = useParams();
+  const [project, setProject] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-  const [editedProblem, setEditedProblem] = useState({ title: "", description: "" });
+  const [editedProject, setEditedProject] = useState({ title: "", description: "" });
 
   useEffect(() => {
-    const fetchProblem = async () => {
+    const fetchProject = async () => {
       try {
-        const response = await axios.get(API_URL + `/${problemId}`);
+        const response = await axios.get(API_URL + `/${projectId}`);
         const data = response.data;
         if (data.status === "success") {
-          setProblem(data.data.problem);
-          setEditedProblem({ title: data.data.problem.title, description: data.data.problem.description });
+          setProject(data.data.project);
+          setEditedProject({ title: data.data.project.title, description: data.data.project.description });
         } else {
-          setErrorMessage("Failed to fetch problem");
+          setErrorMessage("Failed to fetch project");
         }
       } catch (error) {
-        setErrorMessage("Failed to fetch problem");
+        setErrorMessage("Failed to fetch project");
       }
     };
 
-    fetchProblem();
-  }, [problemId]);
+    fetchProject();
+  }, [projectId]);
 
   const handleEdit = () => {
     if (!isLoggedIn) {
@@ -44,27 +43,28 @@ function ProblemDetail() {
 
   const handleUpdate = async () => {
     try {
-      const response = await axios.patch(API_URL + `/${problemId}`, editedProblem, {
+      const response = await axios.patch(API_URL + `/${projectId}`, editedProject, {
         headers: {
           "Content-Type": "application/json"
         }
       });
       const data = response.data;
+
       if (data.status === "Success") {
-        setProblem(data.data.problem);
+        setProject(data.data.project);
         setIsEditing(false);
       } else {
-        setErrorMessage("Failed to update problem");
+        setErrorMessage("Failed to update project");
       }
     } catch (error) {
       console.error(error);
-      setErrorMessage("Failed to update problem" + error.message);
+      setErrorMessage("Failed to update project" + error.message);
     }
   };
 
   const handleChange = e => {
     const { name, value } = e.target;
-    setEditedProblem(prevState => ({
+    setEditedProject(prevState => ({
       ...prevState,
       [name]: value
     }));
@@ -73,30 +73,30 @@ function ProblemDetail() {
   return (
     <div className="max-w-3xl lg:mx-24 px-8 py-4 my-4 bg-gray-50 rounded-lg shadow-md opacity-70">
       {errorMessage && <p className="text-red-600 font-semibold mb-4">{errorMessage}</p>}
-      {problem && (
+      {project && (
         <div>
           <h2 className="text-xl font-semibold mb-2">
             {isEditing ? (
               <input
                 name="title"
-                value={editedProblem.title}
+                value={editedProject.title}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
               />
             ) : (
-              problem.title
+              project.title
             )}
           </h2>
           <p className="text-gray-700 mb-4">
             {isEditing ? (
               <textarea
                 name="description"
-                value={editedProblem.description}
+                value={editedProject.description}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500 h-64"
               />
             ) : (
-              problem.description
+              project.description
             )}
           </p>
           {isEditing ? (
@@ -118,4 +118,4 @@ function ProblemDetail() {
   );
 }
 
-export default ProblemDetail;
+export default ProjectDetail;

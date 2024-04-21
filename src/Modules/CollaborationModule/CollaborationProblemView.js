@@ -58,17 +58,17 @@ function CollaborationProblemView() {
   };
 
   return (
-    <div>
+    <div className="lg:mx-24">
       {errorMessage && <p className="text-red-600 font-semibold mb-4">{errorMessage}</p>}
       {collaborations.map(collaboration => (
-        <div
-          key={collaboration._id}
-          className="max-w-3xl mx-auto px-8 py-4 my-4 bg-gray-50 rounded-lg shadow-md opacity-70">
+        <div key={collaboration._id} className="max-w-3xl  px-8 py-4 my-4 bg-gray-50 rounded-lg shadow-md opacity-70">
           <p>Created By: {collaboration.createdBy}</p>
           <p>Discussion: {collaboration.discussions}</p>
         </div>
       ))}
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "20px" }}>
+      <div className="flex justify-center ">
+        {" "}
+        {/* Center the button */}
         <button
           onClick={loadMore}
           className="text-indigo-800 bg-indigo-200 py-2 px-8 mb-4 rounded-xl cursor-pointer shadow-lg focus:shadow-xl hover:shadow-xl active:shadow transform hover:-translate-y-0.5 active:translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 duration-300 ease-in-out">
